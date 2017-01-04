@@ -29,7 +29,7 @@ def ModelLearning(X, y):
     fig = pl.figure(figsize=(10,7))
 
     # Create three different models based on max_depth
-    for k, depth in enumerate([1,3,6,10]):
+    for k, depth in enumerate([1,4,6,10]):
         
         # Create a Decision tree regressor at max_depth = depth
         regressor = DecisionTreeRegressor(max_depth = depth)
@@ -70,7 +70,7 @@ def ModelLearning(X, y):
 def ModelComplexity(X, y):
     """ Calculates the performance of the model as model complexity increases.
         The learning and testing errors rates are then plotted. """
-    
+    print("in model complexity")
     # Create 10 cross-validation sets for training and testing
     cv = ShuffleSplit(X.shape[0], n_iter = 10, test_size = 0.2, random_state = 0)
 
@@ -81,6 +81,10 @@ def ModelComplexity(X, y):
     train_scores, test_scores = curves.validation_curve(DecisionTreeRegressor(), X, y, \
         param_name = "max_depth", param_range = max_depth, cv = cv, scoring = 'r2')
 
+    #printing training and testing scores
+    print ("train_scores:" +train_scores)
+    print ("test_scores:"+test_Scores)
+    
     # Find the mean and standard deviation for smoothing
     train_mean = np.mean(train_scores, axis=1)
     train_std = np.std(train_scores, axis=1)
@@ -90,8 +94,8 @@ def ModelComplexity(X, y):
     # Plot the validation curve
     pl.figure(figsize=(7, 5))
     pl.title('Decision Tree Regressor Complexity Performance')
-    pl.plot(max_depth, train_mean, 'o-', color = 'r', label = 'Training Score')
-    pl.plot(max_depth, test_mean, 'o-', color = 'g', label = 'Validation Score')
+    pl.plot(max_depth, train_mean, 'o-', color = 'r', label = 'Training Score'+ train_scores)
+    pl.plot(max_depth, test_mean, 'o-', color = 'g', label = 'Validation Score'+ test_scores)
     pl.fill_between(max_depth, train_mean - train_std, \
         train_mean + train_std, alpha = 0.15, color = 'r')
     pl.fill_between(max_depth, test_mean - test_std, \
@@ -124,7 +128,7 @@ def PredictTrials(X, y, fitter, data):
         prices.append(pred)
         
         # Result
-        print "Trial {}: ${:,.2f}".format(k+1, pred)
+        print ("Trial {}: ${:,.2f}".format(k+1, pred))
 
     # Display price range
-    print "\nRange in prices: ${:,.2f}".format(max(prices) - min(prices))
+    print ("\nRange in prices: ${:,.2f}".format(max(prices) - min(prices)))
